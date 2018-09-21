@@ -1,4 +1,12 @@
-#_*_
+# -*- coding: utf-8 -*-
+
+"""
+async web application:
+running this, Web App will listen to the HTTP request at port 9000 and respond to homepage '/'
+
+__author__ = 'adapted by Handing Sun from Michael Liao'
+"""
+
 import logging
 import asyncio
 import os
