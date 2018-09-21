@@ -22,6 +22,6 @@ def init(loop):
     logging.info('server started at http://' + web_location)
     return srv 
 
-loop = asyncio.get_event_loop
+loop = asyncio.get_event_loop()
 loop.run_untile_complete(init(loop))
 loop.run_forever
