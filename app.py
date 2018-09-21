@@ -14,8 +14,14 @@ def index(request):
 
 @asyncio.coroutine
 def init(loop):
+    web_location = '127.0.0.1'
+    web_port = 9000
     app = web.Application(loop=loop)
-    app.router.add_route('GET','/',index)
-    srv = yield from loop.create_server(app.make_handler(),'127.0.0.1',9000)
-    logging.info(''server started at http://127.0.0.1:9000...')
+    app.router.add_route('GET', '/', index)
+    srv = yield from loop.create_server(app.make_handler(), web_location, web_port)
+    logging.info('server started at http://' + web_location)
     return srv 
+
+loop = asyncio.get_event_loop
+loop.run_untile_complete(init(loop))
+loop.run_forever
