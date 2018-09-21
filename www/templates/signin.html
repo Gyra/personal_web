@@ -1,0 +1,81 @@
+    <!DOCTYPE html>
+    <html class="uk-height-1-1">
+    <head>
+        <meta charset="UTF-8">
+        <title>Sign In - GoBS</title>
+        <link rel="stylesheet" href="../static/css/uikit.css">
+        <link rel="stylesheet" href="../static/css/uikit-rtl.css" />
+        <!--<link rel="stylesheet" href="../static/css/awesome.css">
+        -->
+        <script src="/static/js/jquery-3.2.1.js"></script>
+        <script src="/static/js/core.js"></script>
+        <script src="/static/js/sha1.js"></script>
+        <script src="/static/js/vue.js"></script>
+        <script src="/static/js/awesome.js"></script>
+        <script src="/static/js/uikit.js"></script>
+        <script src="/static/js/uikit-icons.js"></script>
+        <script>
+            $(function() {
+                var vmAuth = new Vue({
+                    el: '#vm',
+                    data: {
+                        email: '',
+                        passwd: ''
+                    },
+                    methods: {
+                        submit: function(event) {
+                            event.preventDefault();
+                            var
+                                $form = $('#vm'),
+                                email = this.email.trim().toLowerCase(),
+                                data = {
+                                    email: email,
+                                    passwd: this.passwd===''?'' : CryptoJS.SHA1(email + ':' + this.passwd).toString()
+                                };
+                            $form.postJSON('/api/authenticate', data, function(err, result) {
+                                if (! err) {
+                                    location.assign('/');
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body class="uk-card uk-card-default uk-height-1-1">
+        <div class="uk-flex uk-text-center uk-height-1-1">
+            <div style="width: 480px" class="uk-margin-auto uk-margin-auto-vertical">
+                <div class="uk-card-header">
+                <p><a href="/" class="uk-margin uk-icon-button" uk-icon="icon: comments"></a>GoBS</p>
+                </div>
+                <form id="vm" v-on:submit.prevent="submit" class="uk-margin uk-form-controls">
+                    <div class="uk-alert uk-alert-danger uk-hidden"></div>
+                    <div class="uk-form-stacked">
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-stacked-text">Email:</label>
+                            <div class="uk-form-controls">
+                                <div class="uk-inline">
+                                    <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                    <input class="uk-input uk-width-1-1 uk-form-large" name="email" v-model="email" type="text" maxlength="50">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form">Password:</label>
+                            <div class="uk-form-controls">
+                                <div class="uk-inline">
+                                    <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                    <input class="uk-input uk-width-1-1 uk-form-large" name="passwd" v-model="passwd" type="password" maxlength="50">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uk-form-controls">
+                        <button type="submit" class="uk-button uk-button-primary uk-button-large uk-margin-bottom"><i class="uk-icon" uk-icon="icon: sign-in"></i>Sign In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    </html>

@@ -1,0 +1,83 @@
+{% extends '__base__.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% block beforehead %}
+
+<script>
+
+    function initVM(data) {
+        $('#vm').show();
+        var vm = new Vue({
+            el: '#vm',
+            data: {
+                users: data.users,
+                page: data.page
+            }
+        });
+    }
+
+    $(function() {
+        getJSON('/api/users', {
+            page: {{ page_index }}
+        }, function (err, results) {
+            if (err) {
+                return fatal(err);
+            }
+            $('#loading').hide();
+            initVM(results);
+        });
+    });
+
+</script>
+
+{% endblock %}
+
+{%block content %}
+
+    <div class="uk-width-1-1 uk-margin-bottom">
+        <div class="uk-card">
+            <ul class="uk-breadcrumb">
+                <li><a href="/manage/comments">Comment</a></li>
+                <li><a href="/manage/blogs">Gossips</a></li>
+                <li class="uk-active"><span>User</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="error" class="uk-width-1-1">
+    </div>
+
+    <div id="loading" class="uk-width-1-1 uk-text-center">
+        <span><i class="uk-icon" uk-icon="icon: clock"></i>loading...</span>
+    </div>
+
+    <div id="vm" class="uk-width-1-1">
+        <table class="uk-table uk-table-just uk-table-divider">
+            <thead>
+                <tr>
+                    <td class="uk-table-expand">Name</td>
+                    <td>Email</td>
+                    <td>Created at</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="user in users">
+                    <td>
+                        <span v-text="user.name"></span>
+                        <span v-if="user.admin" style="color:#dd0055"><i class="uk-icon" uk-icon="icon: lifesaver"></i>Admin</span>
+                    </td>
+                    <td>
+                        <a v-bind:href="'fake email:'+user.email" v-text="user.email"></a>
+                    </td>
+                    <td>
+                        <span v-text="user.created_at.toDateTime()"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {{page_index}}
+        <!--<div v-component="pagination" v-with="page"></div>-->
+    </div>
+
+{% endblock %}

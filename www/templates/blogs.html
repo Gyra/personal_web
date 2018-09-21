@@ -1,0 +1,38 @@
+{% extends '__base__.html' %}
+
+{% block title %}GoBS{% endblock %}
+
+{% block beforehead %}
+
+<script>
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-3-4">
+        {% for blog in blogs %}
+            <article class="uk-article">
+                <h2><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h2>
+                <p class="uk-article-meta">Published on {{ blog.created_at|datetime }}</p>
+                <p>{{ blog.summary }}</p>
+                <p><a href="/blog/{{ blog.id }}">Full content <i class="uk-icon-button" uk-icon="icon: more-vertical"></i></a></p>
+            </article>
+            <hr class="uk-article">
+        {% endfor %}
+        {{ pagination('/?page=', page) }}
+    </div>
+
+    <div class="uk-width-1-4">
+        <div class="uk-card uk-card-header">
+            <h3 class="uk-panel">Hungry?</h3>
+            <ul class="uk-list">
+                <li><i class="uk-icon-link" uk-icon="icon: social"><a target="_blank" href="http://www.kfc.co.uk/">KFC</a> </i></li>
+                <li><i class="uk-icon-link" uk-icon="icon: social"><a target="_blank" href="http://www.qcong.com/">青葱食堂</a> </i></li>
+                <li><i class="uk-icon-link" uk-icon="icon: social"><a target="_blank" href="http://www.mcdonalds.co.uk/ukhome.html">McDonalds</a> </i></li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

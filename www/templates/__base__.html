@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+{% macro pagination(url, page) %}
+    <ul class="uk-pagination">
+        {% if page.has_previous %}
+            <li><a href="{{ url }}{{ page.page_index - 1 }}"><i class="uk-icon-link" uk-icon="icon: chevron-left"></i></a></li>
+        {% else %}
+            <li class="uk-disabled"><span><i class="uk-icon" uk-icon="icon: chevron-left"></i></span></li>
+        {% endif %}
+            <li class="uk-active"><span>{{ page.page_index }}</span></li>
+        {% if page.has_next %}
+            <li><a href="{{ url }}{{ page.page_index + 1 }}"><i class="uk-icon-link" uk-icon="icon: chevron-right"></i></a></li>
+        {% else %}
+            <li class="uk-disabled"><span><i class="uk-icon" uk-icon="icon: chevron-right"></i></span></li>
+        {% endif %}
+    </ul>
+{% endmacro %}
+
+
+<html>
+<head>
+    <meta charset="UTF-8" />
+    {% block meta %}<!-- block meta -->{% endblock %}
+    <title>{% block title %} {% endblock %} - Gossips in DUBS</title>
+    <link rel="stylesheet" href="/static/css/uikit.css">
+    <link rel="stylesheet" href="/static/css/uikit-rtl.css" />
+    <link rel="stylesheet" href="/static/css/awesome.css">
+    <script src="/static/js/core.js"></script>
+    <script src="/static/js/jquery-3.2.1.js"></script>
+    <script src="/static/js/sha1.js"></script>
+    <script src="/static/js/vue.js"></script>
+    <script src="/static/js/awesome.js"></script>
+    <script src="/static/js/uikit.js"></script>
+    <script src="/static/js/uikit-icons.js"></script>
+    <!-- lot of source here
+    -->
+    {% block beforehead %}<!-- before head -->{% endblock %}
+</head>
+<body>
+    <nav class="uk-navbar-container uk-margin" uk-navbar>
+        <div class="uk-navbar-left">
+            <a class="uk-navbar-item uk-logo" href="/">Gossips</a>
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="#">Links</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="http://google.com">Google</a></li>
+                            <li><a href="http://github.com">GitHub</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav">
+                {% if __user__ %}
+                    <li class="uk-active"><a href="#"><img class="uk-border-circle" src="{{ __user__.image }}" width="50" height="50"> {{ __user__.name }}</a>
+                        <div class="uk-navbar-dropdown">
+                             <ul class="uk-nav uk-navbar-dropdown-nav">
+                                 <li><a href="/signout">Sign Out</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                {% else %}
+                    <li><a href="/signin">Sign In</a></li>
+                    <li><a href="/register">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="uk-container">
+        <div class="uk-grid">
+            <!-- content -->
+            {% block content %}
+            {% endblock %}
+            <!-- // content -->
+        </div>
+    </div>
+
+    <div class="uk-margin-large-top" style="background-color: Menu; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee">
+        <div class="uk-container uk-text-center">
+            <div class="uk-panel uk-margin-top uk-margin-bottom">
+                <p>Also good webs:
+                    <a target="_blank" href="http://www.google.com" class="uk-icon-button" uk-icon="icon: google"></a>
+                </p>
+                <p>Powered by.....</p>
+                <p>All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

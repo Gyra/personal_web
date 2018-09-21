@@ -1,0 +1,110 @@
+{% extends '__base__.html' %}}
+
+{% block title %}New GoBSer{% endblock %}
+
+{% block beforehead %}
+
+<script>
+
+    function validateEmail(email) {
+        var re = /^[a-z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-z0-9-]+(?:\.[a-z0-9-]+)*$/;
+        return re.test(email.toLowerCase());
+    }
+
+    $(function () {
+        var vm = new Vue({
+            el: '#vm',
+            data: {
+                name: '',
+                email: '',
+                password1: '',
+                password2: ''
+            },
+            methods: {
+                submit: function (event) {
+                    event.preventDefault();
+                    var $form = $('#vm');
+                    if (! this.name.trim()) {
+                        return $form.showFormError('God said, Let there be correct name');
+                    }
+                    if (! validateEmail(this.email.trim().toLowerCase())) {
+                        return $form.showFormError('God said, Let there be correct email');
+                    }
+                    if (this.password1.length < 6) {
+                        return $form.showFormError('Too short that I can guess the answer');
+                    }
+                    if (this.password1 != this.password2) {
+                        return $form.showFormError('You need to choose one of the TWO passwords you entered');
+                    }
+                    var email = this.email.trim().toLowerCase();
+                    $form.postJSON('/api/users', {
+                        name: this.name.trim(),
+                        email: email,
+                        passwd: CryptoJS.SHA1(email + ':' + this.password1).toString()
+                    }, function (err, r) {
+                        if (err) {
+                            return $form.showFormError(err);
+                        }
+                        return location.assign('/')
+                    });
+                }
+            }
+        });
+        $('#vm').show();
+    });
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-2-3">
+        <h2>Welcome to GoBS, Gossip of BS</h2>
+        <form id="vm" v-on:submit.prevent="submit" class="uk-panel uk-panel-box uk-form">
+            <div class="uk-alert uk-alert-danger uk-hidden"></div>
+            <div class="uk-form-stacked">
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-stacked-text">Name:</label>
+                    <div class="uk-form-controls">
+                        <div class="uk-inline">
+                            <span class="uk-form-icon" uk-icon="icon: user"></span>
+                            <input class="uk-input uk-width-1-1 uk-form-large" v-model="name" type="text" maxlength="50">
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                <label class="uk-form">Email (fake one is accepted):</label>
+                <div class="uk-form-controls">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                        <input class="uk-input uk-width-1-1 uk-form-large" v-model="email" type="text" maxlength="50">
+                    </div>
+                </div>
+            </div>
+                <div class="uk-margin">
+                <label class="uk-form">Password:</label>
+                <div class="uk-form-controls">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                        <input class="uk-input uk-width-1-1 uk-form-large" v-model="password1" type="password" maxlength="50">
+                    </div>
+                </div>
+            </div>
+                <div class="uk-margin">
+                <label class="uk-form">Repeat Password:</label>
+                <div class="uk-form-controls">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                        <input class="uk-input uk-width-1-1 uk-form-large" v-model="password2" type="password" maxlength="50">
+                    </div>
+                </div>
+            </div>
+            <div class="uk-form-controls">
+                <button type="submit" class="uk-button-primary uk-button-large">"Here I come"</button>
+            </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

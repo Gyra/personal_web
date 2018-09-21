@@ -1,0 +1,114 @@
+{% extends '__base__.html' %}
+
+{% block title %}GoBS{% endblock %}
+
+{% block beforehead %}
+
+<script>
+
+    var comment_url = '/api/blogs/{{ blog.id }}/comments';
+
+    $(function () {
+        var $form = $('#form-comment');
+        $form.submit(function (e) {
+            e.preventDefault();
+            $form.showFormError('');
+            var content = $form.find('textarea').val().trim();
+            if (content==='') {
+                return $form.showFormError('Please inter some comments');
+            }
+            $form.postJSON(comment_url, { content: content }, function (err, result) {
+                if (err) {
+                    return $form.showFormError(err);
+                }
+                refresh();
+            });
+        });
+    });
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-3-4">
+        <article class="uk-article">
+            <h1>{{ blog.name }}</h1>
+            <p class="uk-article-meta">Published on {{ blog.created_at|datetime }}</p>
+            <p>{{ blog.html_content|safe }}</p>
+        </article>
+
+        <hr class="uk-article-divider">
+
+    {% if __user__ %}
+        <h3> I have a word </h3>
+
+        <article class="uk-comment">
+            <header class="uk-comment-header">
+                <!--<img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{ __user__.user_image }}">-->
+                <h4 class="uk-comment-title">{{ __user__.user_name }} {% if __user__.user_id==blog.user_id %}(Landlord){% endif %}</h4>
+            </header>
+            <div class="uk-comment-body">
+                <form id="form-comment" class="uk-form">
+                    <div class="uk-alert uk-alert-danger uk-hidden"></div>
+                    <div class="uk-form-stacked">
+                        <textarea rows="6" placeholder="bla..bla.." style="width:100%; resize:none;"></textarea>
+                    </div>
+                    <div class="uk-form-stacked">
+                        <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon" uk-icon="icon: comment"></i>Quote me</button>
+                    </div>
+                </form>
+            </div>
+        </article>
+
+        <hr class="uk-article-divider">
+     {% endif %}
+
+        <h3>Newest comments</h3>
+
+        <ul class="uk-comment-list">
+            {% for comment in comments %}
+            <li>
+                <article class="uk-comment uk-visible-toggle">
+                    <header class="uk-comment-header uk-position-relative">
+                        <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                            <div class="uk-width-auto">
+                                <img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{ comment.user_image }}">
+                            </div>
+                            <div class="uk-width-expand">
+                                <h4 class="uk-comment-title">{{ comment.user_name }} {% if comment.user_id==blog.user_id %}{% endif %}</h4>
+                                <p class="uk-comment-meta">{{ comment.created_at|datetime }}</p>
+                            </div>
+                        </div>
+                        <div class="uk-position-top-right uk-position-small uk-hidden-hover"><a class="uk-link-muted" href="#">Reply</a></div>
+                    </header>
+                    <div class="uk-comment-body">
+                        {{ comment.html_content|safe }}
+                    </div>
+                </article>
+            </li>
+            {% else %}
+            <p>HERE IS A SOFA!</p>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="uk-width-1-4">
+        <div class="uk-card uk-card-header">
+            <div class="uk-text-center">
+                <img class="uk-border-circle" width="70" height="70" src="{{ blog.user_image }}">
+                <h3>{{ blog.user_name }}</h3>
+            </div>
+        </div>
+        <div class="uk-card uk-card-body">
+            <h3 class="uk-panel">Hungry?</h3>
+            <ul class="uk-list">
+                <li><i class="uk-icon-link" uk-icon="icon: social"><a target="_blank" href="http://www.kfc.co.uk/">KFC</a> </i></li>
+                <li><i class="uk-icon-link" uk-icon="icon: social"><a target="_blank" href="http://www.qcong.com/">青葱食堂</a> </i></li>
+                <li><i class="uk-icon-link" uk-icon="icon: social"><a target="_blank" href="http://www.mcdonalds.co.uk/ukhome.html">McDonalds</a> </i></li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
