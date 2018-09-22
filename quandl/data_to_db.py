@@ -15,13 +15,15 @@ Base = declarative_base()
 # declare the User class
 class FinanceData(Base):
     # name of the table
-    __table_name__ = 'finance_data'
+    __tablename__ = 'finance_data'
 
     # table structure
     data_date = Column(DateTime, default=func.now(), primary_key=True)
-    us_gdp = Column(Float(10,6), default=0.0, nullable=True)
+    us_gdp = Column(Float, default=0.0, nullable=True)
     # initial db connection
-    engine = create_engine('mysql+mysqlconnector:/root:password@localhost:3306/personal_web')
 
-    # create DBSession 
-    DBSession = sessionmaker(bind=engine)
+
+engine = create_engine('mysql+mysqlconnector://root:password@localhost:3306/personal_web')
+
+# create DBSession 
+DBSession = sessionmaker(bind=engine)
